@@ -6,11 +6,11 @@ using System.Threading;
 
 namespace UI
 {
-    public class UICiudad
+    public class UIPais
     {
-        private readonly CiudadService _servicio;
+        private readonly PaisService _servicio;
 
-        public UICiudad(CiudadService servicio)
+        public UIPais(PaisService servicio)
         {
             _servicio = servicio;
         }
@@ -22,39 +22,39 @@ namespace UI
             {
                 Console.Clear();
                 MostrarTitulo();
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("╔═══════════════════════════════════╗");
-                Console.WriteLine("║         GESTIÓN DE CIUDADES       ║");
+                Console.WriteLine("║          GESTIÓN DE PAÍSES        ║");
                 Console.WriteLine("╠═══════════════════════════════════╣");
-                Console.WriteLine("║ 1. Registrar nueva ciudad         ║");
-                Console.WriteLine("║ 2. Ver todas las ciudades         ║");
-                Console.WriteLine("║ 3. Buscar ciudad por ID           ║");
-                Console.WriteLine("║ 4. Actualizar ciudad              ║");
-                Console.WriteLine("║ 5. Eliminar ciudad                ║");
+                Console.WriteLine("║ 1. Registrar nuevo país           ║");
+                Console.WriteLine("║ 2. Ver todos los países           ║");
+                Console.WriteLine("║ 3. Buscar país por ID             ║");
+                Console.WriteLine("║ 4. Actualizar país                ║");
+                Console.WriteLine("║ 5. Eliminar país                  ║");
                 Console.WriteLine("║ 0. Volver al menú principal       ║");
                 Console.WriteLine("╚═══════════════════════════════════╝");
                 Console.ResetColor();
-
+                
                 Console.Write("\nSeleccione una opción: ");
-
+                
                 if (int.TryParse(Console.ReadLine(), out opcion))
                 {
                     switch (opcion)
                     {
                         case 1:
-                            RegistrarCiudad();
+                            RegistrarPais();
                             break;
                         case 2:
-                            MostrarTodasCiudades();
+                            MostrarTodosPaises();
                             break;
                         case 3:
-                            BuscarCiudadPorId();
+                            BuscarPaisPorId();
                             break;
                         case 4:
-                            ActualizarCiudad();
+                            ActualizarPais();
                             break;
                         case 5:
-                            EliminarCiudad();
+                            EliminarPais();
                             break;
                         case 0:
                             MostrarMensaje("Volviendo al menú principal...", ConsoleColor.Yellow);
@@ -88,137 +88,125 @@ namespace UI
             Console.ReadKey();
         }
 
-        private void DibujarTabla(List<Ciudad> ciudades)
+        private void DibujarTabla(List<Pais> paises)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("╔════════╦══════════════════════════╦════════════════╗");
-            Console.WriteLine("║   ID   ║          NOMBRE          ║   ID REGIÓN    ║");
-            Console.WriteLine("╠════════╬══════════════════════════╬════════════════╣");
+            Console.WriteLine("╔════════╦══════════════════════════════════════════╗");
+            Console.WriteLine("║   ID   ║                  NOMBRE                  ║");
+            Console.WriteLine("╠════════╬══════════════════════════════════════════╣");
             Console.ResetColor();
 
-            foreach (var ciudad in ciudades)
+            foreach (var pais in paises)
             {
-                Console.WriteLine($"║ {ciudad.Id,-6} ║ {ciudad.Nombre,-24} ║ {ciudad.IdRegion,-14} ║");
+                Console.WriteLine($"║ {pais.Id,-6} ║ {pais.Nombre,-40} ║");
             }
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("╚════════╩══════════════════════════╩════════════════╝");
+            Console.WriteLine("╚════════╩══════════════════════════════════════════╝");
             Console.ResetColor();
         }
 
-        private void DibujarDetalleCiudad(Ciudad ciudad)
+        private void DibujarDetallePais(Pais pais)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╔═══════════════════════════════════════════════════╗");
-            Console.WriteLine("║               DETALLES DE LA CIUDAD               ║");
+            Console.WriteLine("║                DETALLES DEL PAÍS                  ║");
             Console.WriteLine("╠═══════════════════════════════════════════════════╣");
             Console.ResetColor();
-            Console.WriteLine($"║ ID:         {ciudad.Id,-39} ║");
-            Console.WriteLine($"║ Nombre:     {ciudad.Nombre,-39} ║");
-            Console.WriteLine($"║ ID Región:  {ciudad.IdRegion,-39} ║");
+            Console.WriteLine($"║ ID:         {pais.Id,-39} ║");
+            Console.WriteLine($"║ Nombre:     {pais.Nombre,-39} ║");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╚═══════════════════════════════════════════════════╝");
             Console.ResetColor();
         }
 
-        private void RegistrarCiudad()
+        private void RegistrarPais()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║       REGISTRAR NUEVA CIUDAD      ║");
+            Console.WriteLine("║        REGISTRAR NUEVO PAÍS       ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            var ciudad = new Ciudad();
-
-            Console.Write("\nNombre de la ciudad: ");
-            ciudad.Nombre = Console.ReadLine();
-
-            Console.Write("ID de la región: ");
-            if (int.TryParse(Console.ReadLine(), out int idRegion))
-            {
-                ciudad.IdRegion = idRegion;
-            }
-            else
-            {
-                MostrarMensaje("ID de región inválido. Se establecerá como 0.", ConsoleColor.Red);
-                ciudad.IdRegion = 0;
-            }
-
+            
+            var pais = new Pais();
+            
+            Console.Write("\nNombre del país: ");
+            pais.Nombre = Console.ReadLine();
+            
             try
             {
-                _servicio.RegistrarCiudad(ciudad);
-                MostrarMensaje("¡Ciudad registrada exitosamente!", ConsoleColor.Green);
+                _servicio.RegistrarPais(pais);
+                MostrarMensaje("¡País registrado exitosamente!", ConsoleColor.Green);
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error al registrar la ciudad: {ex.Message}", ConsoleColor.Red);
+                MostrarMensaje($"Error al registrar el país: {ex.Message}", ConsoleColor.Red);
             }
         }
 
-        private void MostrarTodasCiudades()
+        private void MostrarTodosPaises()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║         LISTA DE CIUDADES         ║");
+            Console.WriteLine("║          LISTA DE PAÍSES          ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
+            
             try
             {
-                List<Ciudad> ciudades = _servicio.ListarCiudades();
-
-                if (ciudades == null || ciudades.Count == 0)
+                List<Pais> paises = _servicio.ListarPais();
+                
+                if (paises == null || paises.Count == 0)
                 {
-                    MostrarMensaje("No hay ciudades registradas.", ConsoleColor.Yellow);
+                    MostrarMensaje("No hay países registrados.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    DibujarTabla(ciudades);
+                    DibujarTabla(paises);
                     Console.WriteLine("\nPresione cualquier tecla para continuar...");
                     Console.ReadKey();
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error al obtener las ciudades: {ex.Message}", ConsoleColor.Red);
+                MostrarMensaje($"Error al obtener los países: {ex.Message}", ConsoleColor.Red);
             }
         }
 
-        private void BuscarCiudadPorId()
+        private void BuscarPaisPorId()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║       BUSCAR CIUDAD POR ID        ║");
+            Console.WriteLine("║        BUSCAR PAÍS POR ID         ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad: ");
+            
+            Console.Write("\nIngrese el ID del país: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Pais pais = _servicio.BuscarPorId(id);
+                    
+                    if (pais != null)
                     {
-                        DibujarDetalleCiudad(ciudad);
+                        DibujarDetallePais(pais);
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró un país con ID {id}.", ConsoleColor.Yellow);
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al buscar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al buscar el país: {ex.Message}", ConsoleColor.Red);
                     return;
                 }
             }
@@ -227,60 +215,53 @@ namespace UI
                 MostrarMensaje("ID inválido.", ConsoleColor.Red);
                 return;
             }
-
+            
             Console.WriteLine("\nPresione cualquier tecla para continuar...");
             Console.ReadKey();
         }
 
-        private void ActualizarCiudad()
+        private void ActualizarPais()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║         ACTUALIZAR CIUDAD         ║");
+            Console.WriteLine("║          ACTUALIZAR PAÍS          ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad a actualizar: ");
+            
+            Console.Write("\nIngrese el ID del país a actualizar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Pais pais = _servicio.BuscarPorId(id);
+                    
+                    if (pais != null)
                     {
                         Console.WriteLine("\nDatos actuales:");
-                        DibujarDetalleCiudad(ciudad);
-
+                        DibujarDetallePais(pais);
+                        
                         Console.WriteLine("\nIngrese los nuevos datos (deje en blanco para mantener el valor actual):");
-
-                        Console.Write($"Nombre [{ciudad.Nombre}]: ");
+                        
+                        Console.Write($"Nombre [{pais.Nombre}]: ");
                         string nombre = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(nombre))
                         {
-                            ciudad.Nombre = nombre;
+                            pais.Nombre = nombre;
                         }
-
-                        Console.Write($"ID Región [{ciudad.IdRegion}]: ");
-                        string idRegionStr = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(idRegionStr) && int.TryParse(idRegionStr, out int idRegion))
-                        {
-                            ciudad.IdRegion = idRegion;
-                        }
-
+                        
                         // Mostrar mensaje de error ya que el método no existe en el servicio
-                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarCiudad en CiudadService.", ConsoleColor.Red);
+                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarPais en PaisService.", ConsoleColor.Red);
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró un país con ID {id}.", ConsoleColor.Yellow);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al actualizar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al actualizar el país: {ex.Message}", ConsoleColor.Red);
                 }
             }
             else
@@ -289,38 +270,37 @@ namespace UI
             }
         }
 
-
-        private void EliminarCiudad()
+        private void EliminarPais()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║          ELIMINAR CIUDAD          ║");
+            Console.WriteLine("║           ELIMINAR PAÍS           ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad a eliminar: ");
+            
+            Console.Write("\nIngrese el ID del país a eliminar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Pais pais = _servicio.BuscarPorId(id);
+                    
+                    if (pais != null)
                     {
-                        Console.WriteLine("\nDatos de la ciudad a eliminar:");
-                        DibujarDetalleCiudad(ciudad);
-
+                        Console.WriteLine("\nDatos del país a eliminar:");
+                        DibujarDetallePais(pais);
+                        
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\n¿Está seguro de eliminar esta ciudad? (S/N): ");
+                        Console.Write("\n¿Está seguro de eliminar este país? (S/N): ");
                         Console.ResetColor();
                         string confirmacion = Console.ReadLine()?.ToUpper() ?? "N";
-
+                        
                         if (confirmacion == "S")
                         {
                             // Mostrar mensaje de error ya que el método no existe en el servicio
-                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarCiudad en CiudadService.", ConsoleColor.Red);
+                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarPais en PaisService.", ConsoleColor.Red);
                         }
                         else
                         {
@@ -329,12 +309,12 @@ namespace UI
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró un país con ID {id}.", ConsoleColor.Yellow);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al eliminar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al eliminar el país: {ex.Message}", ConsoleColor.Red);
                 }
             }
             else

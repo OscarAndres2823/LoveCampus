@@ -6,11 +6,11 @@ using System.Threading;
 
 namespace UI
 {
-    public class UICiudad
+    public class UIRegion
     {
-        private readonly CiudadService _servicio;
+        private readonly RegionService _servicio;
 
-        public UICiudad(CiudadService servicio)
+        public UIRegion(RegionService servicio)
         {
             _servicio = servicio;
         }
@@ -22,39 +22,39 @@ namespace UI
             {
                 Console.Clear();
                 MostrarTitulo();
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("╔═══════════════════════════════════╗");
-                Console.WriteLine("║         GESTIÓN DE CIUDADES       ║");
+                Console.WriteLine("║         GESTIÓN DE REGIONES       ║");
                 Console.WriteLine("╠═══════════════════════════════════╣");
-                Console.WriteLine("║ 1. Registrar nueva ciudad         ║");
-                Console.WriteLine("║ 2. Ver todas las ciudades         ║");
-                Console.WriteLine("║ 3. Buscar ciudad por ID           ║");
-                Console.WriteLine("║ 4. Actualizar ciudad              ║");
-                Console.WriteLine("║ 5. Eliminar ciudad                ║");
+                Console.WriteLine("║ 1. Registrar nueva región         ║");
+                Console.WriteLine("║ 2. Ver todas las regiones         ║");
+                Console.WriteLine("║ 3. Buscar región por ID           ║");
+                Console.WriteLine("║ 4. Actualizar región              ║");
+                Console.WriteLine("║ 5. Eliminar región                ║");
                 Console.WriteLine("║ 0. Volver al menú principal       ║");
                 Console.WriteLine("╚═══════════════════════════════════╝");
                 Console.ResetColor();
-
+                
                 Console.Write("\nSeleccione una opción: ");
-
+                
                 if (int.TryParse(Console.ReadLine(), out opcion))
                 {
                     switch (opcion)
                     {
                         case 1:
-                            RegistrarCiudad();
+                            RegistrarRegion();
                             break;
                         case 2:
-                            MostrarTodasCiudades();
+                            MostrarTodasRegiones();
                             break;
                         case 3:
-                            BuscarCiudadPorId();
+                            BuscarRegionPorId();
                             break;
                         case 4:
-                            ActualizarCiudad();
+                            ActualizarRegion();
                             break;
                         case 5:
-                            EliminarCiudad();
+                            EliminarRegion();
                             break;
                         case 0:
                             MostrarMensaje("Volviendo al menú principal...", ConsoleColor.Yellow);
@@ -88,17 +88,17 @@ namespace UI
             Console.ReadKey();
         }
 
-        private void DibujarTabla(List<Ciudad> ciudades)
+        private void DibujarTabla(List<Region> regiones)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╔════════╦══════════════════════════╦════════════════╗");
-            Console.WriteLine("║   ID   ║          NOMBRE          ║   ID REGIÓN    ║");
+            Console.WriteLine("║   ID   ║          NOMBRE          ║     ID PAÍS    ║");
             Console.WriteLine("╠════════╬══════════════════════════╬════════════════╣");
             Console.ResetColor();
 
-            foreach (var ciudad in ciudades)
+            foreach (var region in regiones)
             {
-                Console.WriteLine($"║ {ciudad.Id,-6} ║ {ciudad.Nombre,-24} ║ {ciudad.IdRegion,-14} ║");
+                Console.WriteLine($"║ {region.Id,-6} ║ {region.Nombre,-24} ║ {region.IdPais,-14} ║");
             }
 
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -106,119 +106,119 @@ namespace UI
             Console.ResetColor();
         }
 
-        private void DibujarDetalleCiudad(Ciudad ciudad)
+        private void DibujarDetalleRegion(Region region)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╔═══════════════════════════════════════════════════╗");
-            Console.WriteLine("║               DETALLES DE LA CIUDAD               ║");
+            Console.WriteLine("║               DETALLES DE LA REGIÓN               ║");
             Console.WriteLine("╠═══════════════════════════════════════════════════╣");
             Console.ResetColor();
-            Console.WriteLine($"║ ID:         {ciudad.Id,-39} ║");
-            Console.WriteLine($"║ Nombre:     {ciudad.Nombre,-39} ║");
-            Console.WriteLine($"║ ID Región:  {ciudad.IdRegion,-39} ║");
+            Console.WriteLine($"║ ID:         {region.Id,-39} ║");
+            Console.WriteLine($"║ Nombre:     {region.Nombre,-39} ║");
+            Console.WriteLine($"║ ID País:    {region.IdPais,-39} ║");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╚═══════════════════════════════════════════════════╝");
             Console.ResetColor();
         }
 
-        private void RegistrarCiudad()
+        private void RegistrarRegion()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║       REGISTRAR NUEVA CIUDAD      ║");
+            Console.WriteLine("║       REGISTRAR NUEVA REGIÓN      ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            var ciudad = new Ciudad();
-
-            Console.Write("\nNombre de la ciudad: ");
-            ciudad.Nombre = Console.ReadLine();
-
-            Console.Write("ID de la región: ");
-            if (int.TryParse(Console.ReadLine(), out int idRegion))
+            
+            var region = new Region();
+            
+            Console.Write("\nNombre de la región: ");
+            region.Nombre = Console.ReadLine();
+            
+            Console.Write("ID del país: ");
+            if (int.TryParse(Console.ReadLine(), out int idPais))
             {
-                ciudad.IdRegion = idRegion;
+                region.IdPais = idPais;
             }
             else
             {
-                MostrarMensaje("ID de región inválido. Se establecerá como 0.", ConsoleColor.Red);
-                ciudad.IdRegion = 0;
+                MostrarMensaje("ID de país inválido. Se establecerá como 0.", ConsoleColor.Red);
+                region.IdPais = 0;
             }
 
             try
             {
-                _servicio.RegistrarCiudad(ciudad);
-                MostrarMensaje("¡Ciudad registrada exitosamente!", ConsoleColor.Green);
+                _servicio.RegistrarRegion(region);
+                MostrarMensaje("¡Región registrada exitosamente!", ConsoleColor.Green);
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error al registrar la ciudad: {ex.Message}", ConsoleColor.Red);
+                MostrarMensaje($"Error al registrar la región: {ex.Message}", ConsoleColor.Red);
             }
         }
 
-        private void MostrarTodasCiudades()
+        private void MostrarTodasRegiones()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║         LISTA DE CIUDADES         ║");
+            Console.WriteLine("║         LISTA DE REGIONES         ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
+            
             try
             {
-                List<Ciudad> ciudades = _servicio.ListarCiudades();
-
-                if (ciudades == null || ciudades.Count == 0)
+                List<Region> regiones = _servicio.ListarRegiones();
+                
+                if (regiones == null || regiones.Count == 0)
                 {
-                    MostrarMensaje("No hay ciudades registradas.", ConsoleColor.Yellow);
+                    MostrarMensaje("No hay regiones registradas.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    DibujarTabla(ciudades);
+                    DibujarTabla(regiones);
                     Console.WriteLine("\nPresione cualquier tecla para continuar...");
                     Console.ReadKey();
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error al obtener las ciudades: {ex.Message}", ConsoleColor.Red);
+                MostrarMensaje($"Error al obtener las regiones: {ex.Message}", ConsoleColor.Red);
             }
         }
 
-        private void BuscarCiudadPorId()
+        private void BuscarRegionPorId()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║       BUSCAR CIUDAD POR ID        ║");
+            Console.WriteLine("║       BUSCAR REGIÓN POR ID        ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad: ");
+            
+            Console.Write("\nIngrese el ID de la región: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Region region = _servicio.ObtenerPorId(id);
+                    
+                    if (region != null)
                     {
-                        DibujarDetalleCiudad(ciudad);
+                        DibujarDetalleRegion(region);
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró una región con ID {id}.", ConsoleColor.Yellow);
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al buscar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al buscar la región: {ex.Message}", ConsoleColor.Red);
                     return;
                 }
             }
@@ -227,60 +227,60 @@ namespace UI
                 MostrarMensaje("ID inválido.", ConsoleColor.Red);
                 return;
             }
-
+            
             Console.WriteLine("\nPresione cualquier tecla para continuar...");
             Console.ReadKey();
         }
 
-        private void ActualizarCiudad()
+        private void ActualizarRegion()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║         ACTUALIZAR CIUDAD         ║");
+            Console.WriteLine("║         ACTUALIZAR REGIÓN         ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad a actualizar: ");
+            
+            Console.Write("\nIngrese el ID de la región a actualizar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Region region = _servicio.ObtenerPorId(id);
+                    
+                    if (region != null)
                     {
                         Console.WriteLine("\nDatos actuales:");
-                        DibujarDetalleCiudad(ciudad);
-
+                        DibujarDetalleRegion(region);
+                        
                         Console.WriteLine("\nIngrese los nuevos datos (deje en blanco para mantener el valor actual):");
-
-                        Console.Write($"Nombre [{ciudad.Nombre}]: ");
+                        
+                        Console.Write($"Nombre [{region.Nombre}]: ");
                         string nombre = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(nombre))
                         {
-                            ciudad.Nombre = nombre;
+                            region.Nombre = nombre;
                         }
-
-                        Console.Write($"ID Región [{ciudad.IdRegion}]: ");
-                        string idRegionStr = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(idRegionStr) && int.TryParse(idRegionStr, out int idRegion))
+                        
+                        Console.Write($"ID País [{region.IdPais}]: ");
+                        string idPaisStr = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(idPaisStr) && int.TryParse(idPaisStr, out int idPais))
                         {
-                            ciudad.IdRegion = idRegion;
+                            region.IdPais = idPais;
                         }
-
+                        
                         // Mostrar mensaje de error ya que el método no existe en el servicio
-                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarCiudad en CiudadService.", ConsoleColor.Red);
+                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarRegion en RegionService.", ConsoleColor.Red);
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró una región con ID {id}.", ConsoleColor.Yellow);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al actualizar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al actualizar la región: {ex.Message}", ConsoleColor.Red);
                 }
             }
             else
@@ -289,38 +289,37 @@ namespace UI
             }
         }
 
-
-        private void EliminarCiudad()
+        private void EliminarRegion()
         {
             Console.Clear();
             MostrarTitulo();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("╔═══════════════════════════════════╗");
-            Console.WriteLine("║          ELIMINAR CIUDAD          ║");
+            Console.WriteLine("║          ELIMINAR REGIÓN          ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-
-            Console.Write("\nIngrese el ID de la ciudad a eliminar: ");
+            
+            Console.Write("\nIngrese el ID de la región a eliminar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
-                    Ciudad ciudad = _servicio.BuscarPorId(id);
-
-                    if (ciudad != null)
+                    Region region = _servicio.ObtenerPorId(id);
+                    
+                    if (region != null)
                     {
-                        Console.WriteLine("\nDatos de la ciudad a eliminar:");
-                        DibujarDetalleCiudad(ciudad);
-
+                        Console.WriteLine("\nDatos de la región a eliminar:");
+                        DibujarDetalleRegion(region);
+                        
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\n¿Está seguro de eliminar esta ciudad? (S/N): ");
+                        Console.Write("\n¿Está seguro de eliminar esta región? (S/N): ");
                         Console.ResetColor();
                         string confirmacion = Console.ReadLine()?.ToUpper() ?? "N";
-
+                        
                         if (confirmacion == "S")
                         {
                             // Mostrar mensaje de error ya que el método no existe en el servicio
-                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarCiudad en CiudadService.", ConsoleColor.Red);
+                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarRegion en RegionService.", ConsoleColor.Red);
                         }
                         else
                         {
@@ -329,12 +328,12 @@ namespace UI
                     }
                     else
                     {
-                        MostrarMensaje($"No se encontró una ciudad con ID {id}.", ConsoleColor.Yellow);
+                        MostrarMensaje($"No se encontró una región con ID {id}.", ConsoleColor.Yellow);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error al eliminar la ciudad: {ex.Message}", ConsoleColor.Red);
+                    MostrarMensaje($"Error al eliminar la región: {ex.Message}", ConsoleColor.Red);
                 }
             }
             else
