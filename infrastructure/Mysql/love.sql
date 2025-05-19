@@ -27,6 +27,8 @@ CREATE TABLE usuarios (
     carrera VARCHAR(50),
     frase_perfil TEXT,
     id_ciudad INT,
+    id_cuenta INT,
+    FOREIGN KEY (id_cuenta) REFERENCES cuentas(id)
     FOREIGN KEY (id_ciudad) REFERENCES ciudad(id)
 );
 
@@ -92,4 +94,11 @@ CREATE TABLE bloqueos (
     FOREIGN KEY (id_usuario_origen) REFERENCES usuarios(id),
     FOREIGN KEY (id_usuario_bloqueado) REFERENCES usuarios(id),
     UNIQUE(id_usuario_origen, id_usuario_bloqueado)
+);
+CREATE TABLE cuentas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    contraseña VARCHAR(255) NOT NULL,
+    estado ENUM('activo', 'pendiente', 'suspendido') DEFAULT 'activo',
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

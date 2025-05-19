@@ -10,26 +10,32 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
     {
         public void CrearPais(Pais pais)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "INSERT INTO pais (nombre, id_pais) VALUES (@nombre, @pais)";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "INSERT INTO pais (nombre) VALUES (@nombre)";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", pais.Nombre);
             cmd.ExecuteNonQuery();
         }
+
         public Pais ObtenerPaisPorId(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "SELECT * FROM pais WHERE id_pais = @id";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "SELECT * FROM pais WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);
+
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
                 return new Pais
                 {
-                    Id = reader.GetInt32("id_pais"),
+                    Id = reader.GetInt32("id"),
                     Nombre = reader.GetString("nombre")
                 };
             }
@@ -39,16 +45,19 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
         public List<Pais> ObtenerTodos()
         {
             var lista = new List<Pais>();
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "SELECT * FROM pais";
             using var cmd = new MySqlCommand(query, conn);
+
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 lista.Add(new Pais
                 {
-                    Id = reader.GetInt32("id_pais"),
+                    Id = reader.GetInt32("id"),
                     Nombre = reader.GetString("nombre")
                 });
             }
@@ -57,22 +66,27 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
 
         public void ActualizarPais(Pais pais)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "UPDATE pais SET nombre = @nombre WHERE id_pais = @id";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "UPDATE pais SET nombre = @nombre WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", pais.Nombre);
             cmd.Parameters.AddWithValue("@id", pais.Id);
+            cmd.ExecuteNonQuery();
         }
 
         public void EliminarPais(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "DELETE FROM pais WHERE id_pais = @id";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "DELETE FROM pais WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.ExecuteNonQuery();
-        }        
+        }
     }
 }

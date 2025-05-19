@@ -271,7 +271,8 @@ namespace UI
                         }
                         
                         // Mostrar mensaje de error ya que el método no existe en el servicio
-                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarRegion en RegionService.", ConsoleColor.Red);
+                         _servicio.ActualizarRegion(region);
+                        MostrarMensaje("Region actualizado correctamente.", ConsoleColor.Green);
                     }
                     else
                     {
@@ -319,7 +320,9 @@ namespace UI
                         if (confirmacion == "S")
                         {
                             // Mostrar mensaje de error ya que el método no existe en el servicio
-                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarRegion en RegionService.", ConsoleColor.Red);
+                            _servicio.EliminarRegion(id);
+                            MostrarMensaje("Region eliminada correctamente.", ConsoleColor.Green);
+
                         }
                         else
                         {

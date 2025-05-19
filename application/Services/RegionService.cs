@@ -26,5 +26,16 @@ namespace LoveCampus.application.Services
         {
             return _repositorio.ObtenerRegionPorId(id);
         }
+        
+        public void ActualizarRegion(Region region)
+        {
+            _repositorio.ActualizarRegion(region);
+        }
+
+        public void EliminarRegion(int id)
+        {
+            _repositorio.EliminarRegion(id);
+        }
+
     }
 }
