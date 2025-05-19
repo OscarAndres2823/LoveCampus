@@ -10,9 +10,11 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
     {
         public void CrearCiudad(Ciudad ciudad)
         {
-            using var conn =  ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "INSERT INTO ciudad (nombre, id_region) VALUES (@nobre, @region)";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "INSERT INTO ciudad (nombre, region_id) VALUES (@nombre, @region)";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", ciudad.Nombre);
             cmd.Parameters.AddWithValue("@region", ciudad.IdRegion);
@@ -21,8 +23,10 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
 
         public Ciudad ObtenerCiudadPorId(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "SELECT * FROM ciudad WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);
@@ -33,7 +37,7 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
                 {
                     Id = reader.GetInt32("id"),
                     Nombre = reader.GetString("nombre"),
-                    IdRegion = reader.GetInt32("id_region")
+                    IdRegion = reader.GetInt32("region_id")
                 };
             }
             return null;
@@ -42,8 +46,10 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
         public List<Ciudad> ObtenerTodos()
         {
             var lista = new List<Ciudad>();
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "SELECT * FROM ciudad";
             using var cmd = new MySqlCommand(query, conn);
             using var reader = cmd.ExecuteReader();
@@ -53,7 +59,7 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
                 {
                     Id = reader.GetInt32("id"),
                     Nombre = reader.GetString("nombre"),
-                    IdRegion = reader.GetInt32("id_region")
+                    IdRegion = reader.GetInt32("region_id")
                 });
             }
             return lista;
@@ -61,19 +67,24 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
 
         public void ActualizarCiudad(Ciudad ciudad)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "UPDATE ciudad SET nombre = @nombre, id_region = @region WHERE id = @id";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "UPDATE ciudad SET nombre = @nombre, region_id = @region WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", ciudad.Nombre);
             cmd.Parameters.AddWithValue("@region", ciudad.IdRegion);
             cmd.Parameters.AddWithValue("@id", ciudad.Id);
+            cmd.ExecuteNonQuery();
         }
 
         public void EliminarCiudad(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "DELETE FROM ciudad WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);

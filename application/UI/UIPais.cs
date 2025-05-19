@@ -34,9 +34,9 @@ namespace UI
                 Console.WriteLine("║ 0. Volver al menú principal       ║");
                 Console.WriteLine("╚═══════════════════════════════════╝");
                 Console.ResetColor();
-                
+
                 Console.Write("\nSeleccione una opción: ");
-                
+
                 if (int.TryParse(Console.ReadLine(), out opcion))
                 {
                     switch (opcion)
@@ -129,12 +129,12 @@ namespace UI
             Console.WriteLine("║        REGISTRAR NUEVO PAÍS       ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-            
+
             var pais = new Pais();
-            
+
             Console.Write("\nNombre del país: ");
             pais.Nombre = Console.ReadLine();
-            
+
             try
             {
                 _servicio.RegistrarPais(pais);
@@ -155,11 +155,11 @@ namespace UI
             Console.WriteLine("║          LISTA DE PAÍSES          ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-            
+
             try
             {
                 List<Pais> paises = _servicio.ListarPais();
-                
+
                 if (paises == null || paises.Count == 0)
                 {
                     MostrarMensaje("No hay países registrados.", ConsoleColor.Yellow);
@@ -186,14 +186,14 @@ namespace UI
             Console.WriteLine("║        BUSCAR PAÍS POR ID         ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-            
+
             Console.Write("\nIngrese el ID del país: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
                     Pais pais = _servicio.BuscarPorId(id);
-                    
+
                     if (pais != null)
                     {
                         DibujarDetallePais(pais);
@@ -215,7 +215,7 @@ namespace UI
                 MostrarMensaje("ID inválido.", ConsoleColor.Red);
                 return;
             }
-            
+
             Console.WriteLine("\nPresione cualquier tecla para continuar...");
             Console.ReadKey();
         }
@@ -229,30 +229,32 @@ namespace UI
             Console.WriteLine("║          ACTUALIZAR PAÍS          ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-            
+
             Console.Write("\nIngrese el ID del país a actualizar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
                     Pais pais = _servicio.BuscarPorId(id);
-                    
+
                     if (pais != null)
                     {
                         Console.WriteLine("\nDatos actuales:");
                         DibujarDetallePais(pais);
-                        
+
                         Console.WriteLine("\nIngrese los nuevos datos (deje en blanco para mantener el valor actual):");
-                        
+
                         Console.Write($"Nombre [{pais.Nombre}]: ");
                         string nombre = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(nombre))
                         {
                             pais.Nombre = nombre;
                         }
-                        
+
                         // Mostrar mensaje de error ya que el método no existe en el servicio
-                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarPais en PaisService.", ConsoleColor.Red);
+                        _servicio.ActualizarPais(pais);
+                        MostrarMensaje("País actualizado correctamente.", ConsoleColor.Green);
+
                     }
                     else
                     {
@@ -279,28 +281,30 @@ namespace UI
             Console.WriteLine("║           ELIMINAR PAÍS           ║");
             Console.WriteLine("╚═══════════════════════════════════╝");
             Console.ResetColor();
-            
+
             Console.Write("\nIngrese el ID del país a eliminar: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
                 try
                 {
                     Pais pais = _servicio.BuscarPorId(id);
-                    
+
                     if (pais != null)
                     {
                         Console.WriteLine("\nDatos del país a eliminar:");
                         DibujarDetallePais(pais);
-                        
+
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("\n¿Está seguro de eliminar este país? (S/N): ");
                         Console.ResetColor();
                         string confirmacion = Console.ReadLine()?.ToUpper() ?? "N";
-                        
+
                         if (confirmacion == "S")
                         {
                             // Mostrar mensaje de error ya que el método no existe en el servicio
-                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarPais en PaisService.", ConsoleColor.Red);
+                            _servicio.EliminarPais(id);
+                            MostrarMensaje("País eliminado correctamente.", ConsoleColor.Green);
+
                         }
                         else
                         {

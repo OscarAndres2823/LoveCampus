@@ -10,23 +10,28 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
     {
         public void CrearUsuario(Usuario usuario)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "INSERT INTO usuarios (nombre, genero, edad, carrera, correo, id_ciudad) VALUES (@nombre, @genero, @edad, @carrera, @fraseperfil, @ciudad)";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "INSERT INTO usuarios (nombre, genero, edad, carrera, frase_perfil, id_ciudad) " +
+                           "VALUES (@nombre, @genero, @edad, @carrera, @frasePerfil, @ciudad)";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", usuario.Nombre);
             cmd.Parameters.AddWithValue("@genero", usuario.Genero);
             cmd.Parameters.AddWithValue("@edad", usuario.Edad);
             cmd.Parameters.AddWithValue("@carrera", usuario.Carrera);
-            cmd.Parameters.AddWithValue("@fraseperfil", usuario.FrasePerfil);
+            cmd.Parameters.AddWithValue("@frasePerfil", usuario.FrasePerfil);
             cmd.Parameters.AddWithValue("@ciudad", usuario.IdCiudad);
             cmd.ExecuteNonQuery();
         }
 
         public Usuario ObtenerUsuarioPorId(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "SELECT * FROM usuarios WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);
@@ -40,7 +45,7 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
                     Genero = reader.GetString("genero"),
                     Edad = reader.GetInt32("edad"),
                     Carrera = reader.GetString("carrera"),
-                    FrasePerfil = reader.GetString("frase perfil"),
+                    FrasePerfil = reader.GetString("frase_perfil"),
                     IdCiudad = reader.GetInt32("id_ciudad")
                 };
             }
@@ -50,8 +55,10 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
         public List<Usuario> ObtenerTodos()
         {
             var lista = new List<Usuario>();
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "SELECT * FROM usuarios";
             using var cmd = new MySqlCommand(query, conn);
             using var reader = cmd.ExecuteReader();
@@ -64,7 +71,7 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
                     Genero = reader.GetString("genero"),
                     Edad = reader.GetInt32("edad"),
                     Carrera = reader.GetString("carrera"),
-                    FrasePerfil = reader.GetString("frase perfil"),
+                    FrasePerfil = reader.GetString("frase_perfil"),
                     IdCiudad = reader.GetInt32("id_ciudad")
                 });
             }
@@ -73,15 +80,17 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
 
         public void ActualizarUsuario(Usuario usuario)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
-            string query = "UPDATE usuarios SET nombre=@nombre, genero=@genero, edad=@edad, carrera=@carrera, correo=@correo, id_ciudad=@ciudad WHERE id=@id";
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
+            string query = "UPDATE usuarios SET nombre=@nombre, genero=@genero, edad=@edad, carrera=@carrera, frase_perfil=@frasePerfil, id_ciudad=@ciudad WHERE id=@id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@nombre", usuario.Nombre);
             cmd.Parameters.AddWithValue("@genero", usuario.Genero);
             cmd.Parameters.AddWithValue("@edad", usuario.Edad);
             cmd.Parameters.AddWithValue("@carrera", usuario.Carrera);
-            cmd.Parameters.AddWithValue("@fraseperfil", usuario.FrasePerfil);
+            cmd.Parameters.AddWithValue("@frasePerfil", usuario.FrasePerfil);
             cmd.Parameters.AddWithValue("@ciudad", usuario.IdCiudad);
             cmd.Parameters.AddWithValue("@id", usuario.Id);
             cmd.ExecuteNonQuery();
@@ -89,8 +98,10 @@ namespace LoveCampus.infrastructure.Mysql.Repositories
 
         public void EliminarUsuario(int id)
         {
-            using var conn = ConexionSingleton.ObtenerConexion();
-            conn.Open();
+            using var conn = ConexionSingleton.ObtenerNuevaConexion();
+            if (conn.State != System.Data.ConnectionState.Open)
+                conn.Open();
+
             string query = "DELETE FROM usuarios WHERE id = @id";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", id);

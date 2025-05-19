@@ -271,7 +271,8 @@ namespace UI
                         }
 
                         // Mostrar mensaje de error ya que el método no existe en el servicio
-                        MostrarMensaje("Error: La función de actualización no está implementada en el servicio.\nPor favor, implemente el método ActualizarCiudad en CiudadService.", ConsoleColor.Red);
+                         _servicio.ActualizarCiudad(ciudad);
+                        MostrarMensaje("Ciudad actualizada correctamente.", ConsoleColor.Green);
                     }
                     else
                     {
@@ -320,7 +321,8 @@ namespace UI
                         if (confirmacion == "S")
                         {
                             // Mostrar mensaje de error ya que el método no existe en el servicio
-                            MostrarMensaje("Error: La función de eliminación no está implementada en el servicio.\nPor favor, implemente el método EliminarCiudad en CiudadService.", ConsoleColor.Red);
+                            _servicio.EliminarCiudad(id);
+                            MostrarMensaje("Ciudad eliminada correctamente.", ConsoleColor.Green);
                         }
                         else
                         {

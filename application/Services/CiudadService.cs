@@ -27,5 +27,16 @@ namespace LoveCampus.application.Services
         {
             return _repositorio.ObtenerCiudadPorId(id);
         }
+        
+        public void ActualizarCiudad(Ciudad ciudad)
+        {
+            _repositorio.ActualizarCiudad(ciudad);
+        }
+
+        public void EliminarCiudad(int id)
+        {
+            _repositorio.EliminarCiudad(id);
+        }
+
     }
 }

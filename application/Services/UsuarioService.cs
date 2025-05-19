@@ -27,5 +27,16 @@ namespace LoveCampus.application.Services
         {
             return _repositorio.ObtenerUsuarioPorId(id);
         }
+
+        public void ActualizarUsuario(Usuario usuario)
+        {
+            _repositorio.ActualizarUsuario(usuario);
+        }
+
+        public void EliminarUsuario(int id)
+        {
+            _repositorio.EliminarUsuario(id);
+        }
+
     }
 }

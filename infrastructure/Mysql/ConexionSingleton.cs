@@ -1,21 +1,17 @@
 using MySql.Data.MySqlClient;
+using System;
 
 namespace infrastructure.Mysql
 {
-    public class ConexionSingleton
+    public static class ConexionSingleton
     {
-        private static MySqlConnection conexion;
+        private static readonly string cadenaConexion = "server=localhost;user=root;password=123456;database=love;";
 
-        private ConexionSingleton() { }
-
-        public static MySqlConnection ObtenerConexion()
+        public static MySqlConnection ObtenerNuevaConexion()
         {
-            if (conexion == null)
-            {
-                string cadena = "server=localhost;user=root;password=123456;database=love;";
-                conexion = new MySqlConnection(cadena);
-            }
-            return conexion;
+            var nuevaConexion = new MySqlConnection(cadenaConexion);
+            nuevaConexion.Open();
+            return nuevaConexion;
         }
     }
 }

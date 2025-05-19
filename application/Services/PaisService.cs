@@ -27,5 +27,16 @@ namespace LoveCampus.application.Services
         {
             return _repositorio.ObtenerPaisPorId(id);
         }
+
+        public void ActualizarPais(Pais pais)
+        {
+            _repositorio.ActualizarPais(pais);
+        }
+
+        public void EliminarPais(int id)
+        {
+            _repositorio.EliminarPais(id);
+        }
+
     }
 }
