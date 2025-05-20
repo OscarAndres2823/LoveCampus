@@ -1,6 +1,6 @@
-# 🌟 LoveCampus - Sistema de Emparejamiento Universitario
+# 🌟 LoveCampus - Sistema de Emparejamiento 
 
-LoveCampus es una aplicación de consola en C# diseñada para facilitar conexiones entre estudiantes universitarios. Implementa un sistema de matchmaking similar a las aplicaciones de citas, pero enfocado en el ámbito universitario, permitiendo a los estudiantes conocer a otros con intereses similares.
+LoveCampus es una aplicación de consola en C# diseñada para facilitar conexiones entre estudiantes de Campus. Implementa un sistema de matchmaking similar a las aplicaciones de citas, pero enfocado en el ámbito de Campus, permitiendo a los estudiantes conocer a otros con intereses similares.
 
 ## 📊 Arquitectura del Proyecto
 
