@@ -7,6 +7,7 @@ namespace LoveCampus.domain.Ports
     {
         void CrearUsuario(Usuario usuario);
         Usuario ObtenerUsuarioPorId(int id);
+        Usuario ObtenerUsuarioPorIdCuenta(int idCuenta);
         List<Usuario> ObtenerTodos();
         void ActualizarUsuario(Usuario usuario);
         void EliminarUsuario(int id);

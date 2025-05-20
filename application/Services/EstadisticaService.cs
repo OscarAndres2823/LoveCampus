@@ -1,88 +1,122 @@
+using LoveCampus.domain.Entities;
+using LoveCampus.domain.Ports;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using LoveCampus.domain.Ports;
-using LoveCampus.domain.Entities;
 
-namespace LoveCampus.domain.Services
+namespace LoveCampus.application.Services
 {
     public class EstadisticaService
     {
-        private readonly IInteraccionRepository _interaccionRepo;
-        private readonly IUsuarioRepository _usuarioRepo;
-        private readonly IMatchRepository _matchRepo;
+        private readonly IEstadisticaUsuarioRepository _estadisticaRepo;
 
-        public EstadisticaService(IInteraccionRepository interaccionRepo, IUsuarioRepository usuarioRepo, IMatchRepository matchRepo)
+        public EstadisticaService(IEstadisticaUsuarioRepository estadisticaRepo)
         {
-            _interaccionRepo = interaccionRepo ?? throw new ArgumentNullException(nameof(interaccionRepo));
-            _usuarioRepo = usuarioRepo ?? throw new ArgumentNullException(nameof(usuarioRepo));
-            _matchRepo = matchRepo ?? throw new ArgumentNullException(nameof(matchRepo));
+            _estadisticaRepo = estadisticaRepo;
         }
 
         public void MostrarEstadisticas()
         {
-            // Obtener datos
-            var interacciones = _interaccionRepo.ObtenerTodos();
-            var usuarios = _usuarioRepo.ObtenerTodos();
-            var matches = _matchRepo.ObtenerTodos();
-
-            // Top 3 usuarios con más likes recibidos
-            var topLikes = interacciones
-                .Where(i => i.TipoInteraccion.Equals("LIKE", StringComparison.OrdinalIgnoreCase))
-                .GroupBy(i => i.UsuarioIdDestino)
-                .Select(g => new { UsuarioId = g.Key, Likes = g.Count() })
-                .OrderByDescending(x => x.Likes)
-                .Take(3)
-                .ToList();
-
-            // Top 3 usuarios con más matches
-            var topMatches = matches
-                .SelectMany(m => new[] { m.Usuario1Id, m.Usuario2Id })
-                .GroupBy(id => id)
-                .Select(g => new { UsuarioId = g.Key, Matches = g.Count() })
-                .OrderByDescending(x => x.Matches)
-                .Take(3)
-                .ToList();
-
-            Console.Clear();
-            Console.WriteLine("📊 Estadísticas del sistema:\n");
-
-            Console.WriteLine("💖 Top 3 usuarios con más Likes recibidos:");
-            if (topLikes.Any())
+            try
             {
-                foreach (var l in topLikes)
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine("📈 ESTADÍSTICAS GENERALES DE LOVECAMPUS");
+                Console.WriteLine("=======================================\n");
+                Console.ResetColor();
+                
+                try
                 {
-                    var usuario = usuarios.FirstOrDefault(u => u.Id == l.UsuarioId);
-                    if (usuario != null)
-                        Console.WriteLine($"- {usuario.Nombre}: {l.Likes} likes");
-                    else
-                        Console.WriteLine($"- Usuario con ID {l.UsuarioId}: {l.Likes} likes");
+                    // Mostrar top 3 usuarios por likes recibidos
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("🔝 TOP USUARIOS CON MÁS LIKES RECIBIDOS:");
+                    Console.ResetColor();
+                    var topLikesRecibidos = _estadisticaRepo.ObtenerTopUsuariosPorLikesRecibidos(3);
+                    MostrarLista(topLikesRecibidos, "Likes Recibidos");
                 }
-            }
-            else
-            {
-                Console.WriteLine("No hay likes registrados.");
-            }
-
-            Console.WriteLine("\n💞 Top 3 usuarios con más Matches:");
-            if (topMatches.Any())
-            {
-                foreach (var m in topMatches)
+                catch (Exception)
                 {
-                    var usuario = usuarios.FirstOrDefault(u => u.Id == m.UsuarioId);
-                    if (usuario != null)
-                        Console.WriteLine($"- {usuario.Nombre}: {m.Matches} matches");
-                    else
-                        Console.WriteLine($"- Usuario con ID {m.UsuarioId}: {m.Matches} matches");
+                    Console.WriteLine("No hay datos disponibles sobre likes recibidos.");
                 }
+                
+                try
+                {
+                    // Mostrar top 3 usuarios por matches
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n🏆 TOP USUARIOS CON MÁS MATCHES:");
+                    Console.ResetColor();
+                    var topMatches = _estadisticaRepo.ObtenerTopUsuariosPorMatches(3);
+                    MostrarLista(topMatches, "Matches");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("No hay datos disponibles sobre matches.");
+                }
+                
+                try
+                {
+                    // Mostrar top 3 usuarios por likes dados
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("\n❤️  TOP USUARIOS QUE MÁS DAN LIKES:");
+                    Console.ResetColor();
+                    var topLikesDados = _estadisticaRepo.ObtenerTopUsuariosPorLikesDados(3);
+                    MostrarLista(topLikesDados, "Likes Dados");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("No hay datos disponibles sobre likes dados.");
+                }
+                
+                Console.WriteLine("\n\n❤️  Presione cualquier tecla para continuar...");
+                Console.ReadKey();
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("No hay matches registrados.");
+                Console.WriteLine($"❌ Error al mostrar estadísticas: {ex.Message}");
+                Console.WriteLine($"Detalles: {ex.StackTrace}");
+                Console.ReadKey();
+            }
+        }
+
+        private void MostrarLista(List<EstadisticasUsuario> lista, string tipo)
+        {
+            if (lista == null || lista.Count == 0)
+            {
+                Console.WriteLine("No hay datos disponibles.");
+                return;
             }
 
-            Console.WriteLine("\nPresione cualquier tecla para volver...");
-            Console.ReadKey();
+            // Crear una tabla simple para mostrar los datos
+            Console.WriteLine("\n+" + new string('-', 40) + "+" + new string('-', 10) + "+");
+            Console.WriteLine($"| {"Usuario",-38} | {tipo,-8} |");
+            Console.WriteLine("+" + new string('-', 40) + "+" + new string('-', 10) + "+");
+
+            int posicion = 1;
+            foreach (var estadistica in lista)
+            {
+                var cantidad = tipo switch
+                {
+                    "Likes Recibidos" => estadistica.TotalLikesRecibidos,
+                    "Matches" => estadistica.TotalMatches,
+                    "Likes Dados" => estadistica.TotalLikesDados,
+                    _ => 0
+                };
+
+                string medallaEmoji = posicion switch
+                {
+                    1 => "🥇 ", // Medalla de oro
+                    2 => "🥈 ", // Medalla de plata
+                    3 => "🥉 ", // Medalla de bronce
+                    _ => "   "
+                };
+
+                string nombreUsuario = estadistica.NombreUsuario;
+                if (nombreUsuario.Length > 35) nombreUsuario = nombreUsuario.Substring(0, 32) + "...";
+
+                Console.WriteLine($"| {medallaEmoji}{nombreUsuario,-35} | {cantidad,8} |");
+                posicion++;
+            }
+
+            Console.WriteLine("+" + new string('-', 40) + "+" + new string('-', 10) + "+");
         }
     }
 }
