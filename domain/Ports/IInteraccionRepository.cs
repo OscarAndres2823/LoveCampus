@@ -1,3 +1,6 @@
+using LoveCampus.domain.Entities;
+using System.Collections.Generic;
+
 namespace LoveCampus.domain.Ports
 {
     public interface IInteraccionRepository
@@ -7,5 +10,4 @@ namespace LoveCampus.domain.Ports
         List<Interaccion> ObtenerTodos();
         bool ExisteLikeMutuo(int usuarioOrigen, int usuarioDestino);
     }
-
 }

@@ -27,6 +27,11 @@ namespace LoveCampus.application.Services
         {
             return _repositorio.ObtenerUsuarioPorId(id);
         }
+        
+        public Usuario BuscarPorIdCuenta(int idCuenta)
+        {
+            return _repositorio.ObtenerUsuarioPorIdCuenta(idCuenta);
+        }
 
         public void ActualizarUsuario(Usuario usuario)
         {

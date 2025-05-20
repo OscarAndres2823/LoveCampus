@@ -1,5 +1,7 @@
 using LoveCampus.application.Services;
+using LoveCampus.domain.Entities;
 using System;
+using System.Collections.Generic;
 
 namespace UI
 {
@@ -78,13 +80,19 @@ namespace UI
         private void MostrarMatches()
         {
             Console.Write("Ingrese el ID del usuario: ");
-            int id = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("❌ ID inválido. Debe ser un número entero.");
+                Console.ResetColor();
+                return;
+            }
 
-            var matches = _matchService.ObtenerMatchesDeUsuario(id);
+            var matches = _matchService.ObtenerMatchesPorUsuario(id);
             Console.WriteLine($"💞 Matches del usuario {id}:");
 
-            foreach (var (u1, u2) in matches)
-                Console.WriteLine($"Match entre {u1} y {u2}");
+            foreach (var match in matches)
+                Console.WriteLine($"Match entre usuario {match.Usuario1Id} y usuario {match.Usuario2Id}");
         }
     }
 }
